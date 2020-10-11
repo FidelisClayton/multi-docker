@@ -1,0 +1,21 @@
+services:
+  - docker
+
+before_install:
+  - docker build -t fidelisclayton/docker-react-tutorial -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run fidelisclayton/docker-react-tutorial CI=true npm test
+
+after_success:
+  - docker build -t fidelisclayton/multi-client ./client
+  - docker build -t fidelisclayton/multi-nginx ./nginx
+  - docker build -t fidelisclayton/multi-server ./server
+  - docker build -t fidelisclayton/multi-worker ./worker
+  # Log in Docker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push to Docker hub
+  - docker push fidelisclayton/multi-client
+  - docker push fidelisclayton/multi-nginx
+  - docker push fidelisclayton/multi-server
+  - docker push fidelisclayton/multi-worker
