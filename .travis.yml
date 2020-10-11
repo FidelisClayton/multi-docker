@@ -19,3 +19,15 @@ after_success:
   - docker push fidelisclayton/multi-nginx
   - docker push fidelisclayton/multi-server
   - docker push fidelisclayton/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-central-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-eu-central-1-173256646796
+  bucket_path: docker-multi
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  on:
+    branch: master
